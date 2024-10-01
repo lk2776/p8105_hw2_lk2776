@@ -13,21 +13,21 @@ options(tibble.print_min=5)
 
 problem1:
 
-Read and clean the data; retain line, station, name, station latitude / longitude, routes served, entry, vending, entrance type, and ADA compliance. Convert the entry variable from character (YES vs NO) to a logical variable (the ifelse or case_match function may be useful).
-
-
 ```{r study data}
 #read data using read_csv() from tidyverse
 nyc_data = read_csv("./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv", 
                     na=c("NA",".",""), 
                     col_names=TRUE) |>
+  #clean column names
   janitor::clean_names() |> 
+  #select columns 
   select(line,station_name,station_latitude,station_longitude,
          route1,route2,route3,route4,route5,
          route6,route7,route8,route9,route10,route11,
          entry,vending,entrance_type,ada
-         ) 
-  #mutate(entry=if_else(is.na(entry),FALSE,TRUE))
+         ) |> 
+  #convert entry column from character to logical vector
+  mutate(entry=if_else(entry %in%"YES",TRUE,FALSE))
   
 head(nyc_data)
 ```
