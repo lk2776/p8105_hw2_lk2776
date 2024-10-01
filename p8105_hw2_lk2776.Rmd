@@ -96,11 +96,16 @@ unite("line_station_name", line:station_name) |>
 
 ----------------------------------------------
 ## problem 2
-#[653 x 14]" 
- "[651 x 15]" [119 x 14]" "[263 x 13]", 652, 770
- "[1,033 x 15]"
-246.74
-205410
+
+Mr. trash wheel data has 651 rows and 15 columns. Professor trash wheel data has 119 rows and 14 columns. Gwynnda trash wheel data has 263 rows and 13 columns. 
+
+The combined data has 1033 rows and 15 columns. 
+
+The weight in tons of trash collected by professor trash wheel is 246.74. 
+
+The number of cigarette butts collected by Gwynnda trash wheel in 2022 is 205410. 
+
+
 ```{r read data}
 #read mr_trash_wheel data
 mr_trash_wheel = readxl::read_excel("./data/202409_Trash_Wheel_Collection_Data.xlsx",
@@ -153,7 +158,6 @@ dim(trash_wheel_tidy)
 
 ```
 
-
 ```{r asnwering questions}
 #total trash collected by pro_trash_wheel
 sum(prof_trash_wheel$weight_tons,na.rm=TRUE)
@@ -164,6 +168,7 @@ g_trash_wheel |>  filter(year%in%"2022")  |>
   
 ```
 
+Problem3:
 
   
   
