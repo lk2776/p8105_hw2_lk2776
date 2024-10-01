@@ -6,6 +6,7 @@ date: "2024-09-30"
 ## hw2
 
 ```{r setup, warning=FALSE, message=FALSE}
+#load packages; print 3 lines of tibble output
 library(tidyverse)
 options(tibble.print_min=5)
 ```
@@ -26,6 +27,7 @@ nyc_data = read_csv("./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv",
          route6,route7,route8,route9,route10,route11,
          entry,vending,entrance_type,ada
          ) 
+  #mutate(entry=if_else(is.na(entry),FALSE,TRUE))
   
 head(nyc_data)
 ```
