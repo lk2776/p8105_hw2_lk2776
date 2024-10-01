@@ -101,7 +101,8 @@ unite("line_station_name", line:station_name) |>
 
 ```{r}
 mr_trash_wheel = readxl::read_excel("./data/202409_Trash_Wheel_Collection_Data.xlsx",
-                            sheet = "Mr. Trash Wheel", col_names=TRUE,na="") |>
+                            sheet = "Mr. Trash Wheel", 
+                            col_names=TRUE,na="") |>
   select(-"...15",-"...16") |>
   janitor::clean_names() |>
   drop_na(dumpster) |> 
@@ -115,7 +116,8 @@ dim_desc(mr_trash_wheel)
 prof_trash_wheel = readxl::read_excel("./data/202409_Trash_Wheel_Collection_Data.xlsx",
                             sheet = "Professor Trash Wheel", col_names=TRUE,na="") |>
   janitor::clean_names() |>
-  drop_na(dumpster) |>
+  drop_na(dumpster) |> 
+  mutate(year=as.character(year)) |> 
   mutate(wheel_name = "prof_trash_wheel")
 
 dim_desc(prof_trash_wheel)
@@ -126,6 +128,7 @@ g_trash_wheel = readxl::read_excel("./data/202409_Trash_Wheel_Collection_Data.xl
                             sheet = "Gwynnda Trash Wheel", col_names=TRUE,na="") |>
   janitor::clean_names() |>
   drop_na(dumpster) |>
+  mutate(year=as.character(year)) |> 
   mutate(wheel_name = "g_trash_wheel")
 
 dim_desc(g_trash_wheel)
@@ -143,3 +146,5 @@ lotr_tidy =
     values_to = "words") |>
   mutate(race = str_to_lower(race)) |> 
   select(movie, everything()) 
+  
+  
