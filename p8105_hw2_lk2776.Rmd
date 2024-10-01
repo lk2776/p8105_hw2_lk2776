@@ -97,19 +97,49 @@ unite("line_station_name", line:station_name) |>
 ----------------------------------------------
 ## problem 2
 #[653 x 14]" 
- "[651 x 14]"
+ "[651 x 15]" [119 x 14]" "[263 x 13]"
 
 ```{r}
-mr_trash_wheel = read_excel("./data/202409_Trash_Wheel_Collection_Data.xlsx",
-                            sheet = 1, col_names=TRUE,na="") |>
+mr_trash_wheel = readxl::read_excel("./data/202409_Trash_Wheel_Collection_Data.xlsx",
+                            sheet = "Mr. Trash Wheel", col_names=TRUE,na="") |>
   select(-"...15",-"...16") |>
   janitor::clean_names() |>
   drop_na(dumpster) |> 
-  mutate(sports_balls = as.integer(round(sports_balls),digits=0))
+  mutate(sports_balls = as.integer(round(sports_balls),digits=0)) |>
+  mutate(wheel_name = "mr_trash_wheel")
   
 dim_desc(mr_trash_wheel)
-#check class of columns
-#mr_trash_wheel |> sapply(class)
-
 ```
 
+```{r}
+prof_trash_wheel = readxl::read_excel("./data/202409_Trash_Wheel_Collection_Data.xlsx",
+                            sheet = "Professor Trash Wheel", col_names=TRUE,na="") |>
+  janitor::clean_names() |>
+  drop_na(dumpster) |>
+  mutate(wheel_name = "prof_trash_wheel")
+
+dim_desc(prof_trash_wheel)
+```
+
+```{r}
+g_trash_wheel = readxl::read_excel("./data/202409_Trash_Wheel_Collection_Data.xlsx",
+                            sheet = "Gwynnda Trash Wheel", col_names=TRUE,na="") |>
+  janitor::clean_names() |>
+  drop_na(dumpster) |>
+  mutate(wheel_name = "g_trash_wheel")
+
+dim_desc(g_trash_wheel)
+```
+
+```{r}
+lotr_tidy = 
+  dplyr::bind_rows(mr_trash_wheel, prof_trash_wheel, g_trash_wheel) 
+```
+
+|>
+  pivot_longer(
+    female:male,
+    names_to = "gender", 
+    values_to = "words") |>
+  mutate(race = str_to_lower(race)) |> 
+  select(movie, everything()) 
