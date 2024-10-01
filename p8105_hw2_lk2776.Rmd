@@ -19,12 +19,20 @@ The cleaned NYC dataset contains line, station_name, station_latitude, station_l
 - 468 stations are ada compliant.
 - ~38% of stations with vending allow entrance.
 
+- 91 distinct stations serve the A train after data is reformatted so that route number and name are distinct variables. 
+- of the 91 distinct stations that serve the A train, only 34 stations are ADA compliant. 
+
 
 ```{r study data}
 #read data using read_csv() from tidyverse
 nyc_data = read_csv("./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv", 
                     na=c("NA",".",""), 
-                    col_names=TRUE) |>
+                    col_names = TRUE, 
+                    col_types = cols(
+                      Route8=col_character(),
+                      Route9=col_character(), 
+                      Route10=col_character(),
+                      Route11=col_character())) |>
   #clean column names
   janitor::clean_names() |> 
   #select columns 
@@ -61,4 +69,30 @@ nyc_data |> select(entry, vending) |>
 69/183
   
 ```
+
+
+```{r}
+#number of distinct stations with route "A"
+nyc_data |> pivot_longer(
+  route1:route11, 
+  names_to="route_number",
+  values_to="route_name"
+) |>
+  filter(route_name == "A") |> 
+  unite("line_station_name", line:station_name) |> 
+  n_distinct()
+
+#number of distinct stations with route "A" and ada compliant
+nyc_data |> pivot_longer(
+  route1:route11, 
+  names_to="route_number",
+  values_to="route_name"
+) |>
+  filter(route_name == "A") |> 
+  filter(ada=="TRUE") |> 
+unite("line_station_name", line:station_name) |> 
+  n_distinct()
+```
+
+
 
