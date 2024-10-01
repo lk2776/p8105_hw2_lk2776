@@ -97,21 +97,19 @@ unite("line_station_name", line:station_name) |>
 ----------------------------------------------
 ## problem 2
 #[653 x 14]" 
-> dim_desc(mr_trash_wheel)
-[1] "[651 x 14]"
+ "[651 x 14]"
 
 ```{r}
 mr_trash_wheel = read_excel("./data/202409_Trash_Wheel_Collection_Data.xlsx",
                             sheet = 1, col_names=TRUE,na="") |>
   select(-"...15",-"...16") |>
   janitor::clean_names() |>
-  drop_na(dumpster)
+  drop_na(dumpster) |> 
+  mutate(sports_balls = as.integer(round(sports_balls),digits=0))
   
 dim_desc(mr_trash_wheel)
+#check class of columns
+#mr_trash_wheel |> sapply(class)
 
-mr_trash_wheel |> sapply(class)
-#empty_rows = mr_trash_wheel[!complete.cases(mr_trash_wheel),]
-
-#head(mr_trash_wheel)
 ```
 
