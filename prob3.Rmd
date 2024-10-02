@@ -58,8 +58,8 @@ viewers_df = read_csv("./data/viewers.csv",
   janitor::clean_names() 
 
 print(viewers_df)
-mean(viewers_df$series_1,na.rm = TRUE)
-mean(viewers_df$series_5)
+round(mean(pull(viewers_df, series_1), na.rm=TRUE), digits=2)
+round(mean(pull(viewers_df, series_5), na.rm=TRUE), digits=2)
 
 ```
 
