@@ -7,22 +7,9 @@ date: "2024-09-30"
 ```{r setup, warning=FALSE, message=FALSE}
 #load packages; print 3 lines of tibble output
 library(tidyverse)
-library(readxl)
-options(tibble.print_min=5)
-
 ```
 
 ## problem1:
-
-The cleaned NYC dataset contains line, station_name, station_latitude, station_longitude, routes1-11, entry, vending, entrance_type, ada variables. The cleaning process involved reading the data with missing value using na(), reading the columns route8-11 as character columns using col_types(), cleaning the column names using janitor::clean_names(), selecting the desired columns using select(), and converting entry variable using mutate() and ifelse() functions. The resulting dataset has 19 columns and 1868 rows. The data is not tidy because routes1-11 can be put together in two columns: route_name and route_value. 
-
-- 465 distinct stations in the dataset. 
-- 468 stations are ada compliant.
-- ~38% of stations with vending allow entrance.
-
-- 91 distinct stations serve the A train after data is reformatted so that route number and name are distinct variables. 
-- of the 91 distinct stations that serve the A train, only 34 stations are ADA compliant. 
-
 
 ```{r study data}
 #read data using read_csv() from tidyverse
@@ -47,21 +34,21 @@ nyc_data = read_csv("./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv",
 
 #check class of columns of dataset to verify entry varible class
 nyc_data |> sapply(class)
-
-#check dimensions of dataset
-dim_desc(nyc_data)
-
 ```
 
-```{r answering specific questions}
-#number of distinct line_station_names
-nyc_data |> select(line,station_name)  |>
-  unite("line_station_name", line:station_name) |> 
- n_distinct() 
-   
-#number of stations that are ada compliant
-table(nyc_data$ada)
+The cleaned NYC dataset contains the following variables: line, station_name, station_latitude, station_longitude, routes1-11, entry, vending, entrance_type, and ada. The cleaning process involved reading the data with missing values using na(), specifying columns route8-11 as character columns using col_types(), cleaning the column names with janitor::clean_names(), selecting the desired columns with select(), and converting the entry variable using mutate() and ifelse() functions. The resulting dataset has the following number of rows and columns: **`r dim_desc(nyc_data)`** . The data is not tidy because routes1-11 can be put together in two columns: route_name and route_value. 
 
+- number of distinct stations in the dataset. :**`r nyc_data |> select(line,station_name)  |>
+  unite("line_station_name", line:station_name) |> 
+ n_distinct() `**
+ 
+- number of stations are ada compliant. **`r sum(nyc_data$ada)`**
+
+- ~38% proportion of stations with vending allow entrance
+- 91 distinct stations serve the A train after data is reformatted so that route number and name are distinct variables. 
+- of the 91 distinct stations that serve the A train, only 34 stations are ADA compliant. 
+
+```{r answering more questions}
 #proportion of stations with entry but with out vending
 #table(nyc_data$vending) #183 NO
 nyc_data |> select(entry, vending) |> 
@@ -69,9 +56,6 @@ nyc_data |> select(entry, vending) |>
   table()
 69/183
   
-```
-
-```{r answering more questions}
 #number of distinct stations with route "A"
 nyc_data |> pivot_longer(
   route1:route11, 
@@ -94,17 +78,7 @@ unite("line_station_name", line:station_name) |>
   n_distinct()
 ```
 
-----------------------------------------------
 ## problem 2
-
-Mr. trash wheel data has 651 rows and 15 columns. Professor trash wheel data has 119 rows and 14 columns. Gwynnda trash wheel data has 263 rows and 13 columns. 
-
-The combined data has 1033 rows and 15 columns. 
-
-The weight in tons of trash collected by professor trash wheel is 246.74. 
-
-The number of cigarette butts collected by Gwynnda trash wheel in 2022 is 205410. 
-
 
 ```{r read data}
 #read mr_trash_wheel data
@@ -149,26 +123,129 @@ g_trash_wheel = readxl::read_excel("./data/202409_Trash_Wheel_Collection_Data.xl
 #combine tables 
 trash_wheel_tidy = 
   bind_rows(mr_trash_wheel, prof_trash_wheel, g_trash_wheel) 
-
-#get dimensions of tables 
-dim_desc(mr_trash_wheel)
-dim_desc(prof_trash_wheel)
-dim_desc(g_trash_wheel)
-dim(trash_wheel_tidy)
-
 ```
 
+Mr. Trash Wheel data is read using read_csv(). Empty columns are deselected using select(), and a new variable, wheel_name, is created with the value 'mr_trash_wheel' using mutate(). The values in the 'sports_balls' column are rounded to the nearest integer, and rows that do not include dumpster-specific data are omitted. Professor Trash Wheel and Gwynnda data are cleaned and read in a similar manner, with a new variable, wheel_name, added to them with the values 'prof_trash_wheel' and 'g_trash_wheel,' respectively. The variable year is converted to character class for these two datasets to facilitate binding with other datasets.
 
+The number of rows and columns of mr. trash wheel dataset are: : **`r dim_desc(mr_trash_wheel)`**
+
+The number of rows and columns of prof. trash wheel dataset are: : **`r dim_desc(prof_trash_wheel)`**
+
+The number of rows and columns of gywn. trash wheel dataset are: : **`r dim_desc(g_trash_wheel)`**
+
+The number of rows and columns of the combined dataset are : **`r dim(trash_wheel_tidy)`**
+
+Column names of the combined trashwheel datasets are: **`r colnames(trash_wheel_tidy)`**
+
+The weight in tons of trash collected by professor trash wheel: **`r sum(prof_trash_wheel$weight_tons,na.rm=TRUE)`**
+
+The total number of cigarette butts collected by Gwynnda trash wheel in 2022 are 205410
 ```{r asnwering questions}
-#total trash collected by pro_trash_wheel
-sum(prof_trash_wheel$weight_tons,na.rm=TRUE)
-
 #number of cigarette butts collected by g_trash_wheel in 2022
 g_trash_wheel |>  filter(year%in%"2022")  |>
   summarize(sum_cig_butts = sum(cigarette_butts, na.rm=TRUE))
-  
 ```
-----------------------------------------------
-Problem3:
+additional information: 
 
-  
+Mr. Trash Wheel collected the most trash in tons according to the dataset
+
+The weight in tons of trash collected by mr. trash wheel: **`r sum(mr_trash_wheel$weight_tons,na.rm=TRUE)`**
+
+The weight in tons of trash collected by prof. trash wheel: **`r sum(prof_trash_wheel$weight_tons,na.rm=TRUE)`**
+
+The weight in tons of trash collected by gwynnda trash wheel: **`r sum(g_trash_wheel$weight_tons,na.rm=TRUE)`**
+
+Cigarette butts: Mr. Trash Wheel collected the highest number of cigarette butts according to the dataset. 
+
+The total number of cigarette_butts collected by mr.trash wheel: **`r sum(mr_trash_wheel$cigarette_butts,na.rm=TRUE)`**
+
+The total number of cigarette_butts collected by prof trash wheel: **`r sum(prof_trash_wheel$cigarette_butts,na.rm=TRUE)`**
+
+The total number of cigarette_butts collected by gwynndatrash wheel: **`r sum(g_trash_wheel$cigarette_butts,na.rm=TRUE)`**
+
+Plastic bottles: Mr. Trash Wheel collected the highest number of plastic bottles according to the dataset. 
+
+The total number of plastic_bottles collected by mr.trash wheel: **`r sum(mr_trash_wheel$plastic_bottles,na.rm=TRUE)`**
+
+The total number of plastic_bottles collected by prof trash wheel: **`r sum(prof_trash_wheel$plastic_bottles,na.rm=TRUE)`**
+
+The total number of plastic_bottles collected by gwynndatrash wheel: **`r sum(g_trash_wheel$plastic_bottles,na.rm=TRUE)`**
+
+## problem3 
+
+```{r read bakers, bakes data}
+bakers_data = read_csv("./data/bakers.csv", 
+                       col_names=TRUE,
+                       na=c("NA",".","")) |>
+  janitor::clean_names() |>
+  separate(baker_name,into=c("baker","rest_of_the_name"), sep=" ", remove=FALSE) |>
+  select(-rest_of_the_name)
+
+bakes_data = read_csv("./data/bakes.csv", 
+                      col_names=TRUE,
+                      na=c("NA",".","")) |> 
+  janitor::clean_names() 
+
+#join the datasets by full_join
+bakers_bakes_df = 
+  full_join(bakers_data, bakes_data, by = c("baker", "series")) |>
+  relocate(baker_name,baker,baker_age,baker_occupation,hometown,series,episode,signature_bake,show_stopper)
+
+#check for completeness and correctness of data
+head(anti_join(bakers_data, bakes_data, by = c("baker", "series")))
+head(anti_join(bakes_data, bakers_data, by = c("baker", "series")))
+
+#read results data 
+results_data = read_csv("./data/results.csv", 
+                        col_names=TRUE,
+                        na=c("NA",".",""), skip=2) |>
+  janitor::clean_names() 
+
+#join results data with bakers_bakes_df
+bakers_bakes_results_df = 
+full_join(bakers_bakes_df, results_data, by=c("baker","series","episode"))
+write_csv(bakers_bakes_results_df,file="./data/bakers_bakes_results_df.csv")
+
+#check for completeness of data
+head(anti_join(bakers_bakes_df, results_data, by = c("baker","series","episode")))
+head(anti_join(results_data, bakers_bakes_df,by = c("baker","series","episode")))
+
+```
+
+```{r read viewers data}
+#read viewers_df
+viewers_df = read_csv("./data/viewers.csv", 
+                        col_names=TRUE,
+                        na=c("NA",".","")) |>
+  janitor::clean_names() 
+
+```
+
+Bakers data is read using read_csv() from the tidyverse, and the column names are cleaned using janitor::clean_names(). A 'baker' variable is created from the first part of the baker_name variable using separate(), while the 'rest_of_the_name' is removed from the dataset. This additional variable is created to facilitate a join with bakes_data, which contains only the 'baker' variable (not the full name).
+
+Bakes data is read in a similar fashion and joined with bakers_data using full_join(). Similarly, results_data is read using read_csv(), skipping the first two lines of the dataset, and then joined with bakers_bakes_data using full_join(). The anti_join() function is used to verify that no data is missed while joining the tables.
+
+One of the questions I addressed was whether to skip the lines in results.csv using code or to manually delete those lines in Excel. I chose to use skip = 2 to skip the lines in results.csv. Another question was which join to use; I decided on full_join() to ensure that no data from the dataframes is missed.
+
+The no. of rows and columns of final dataset are: **`r dim(bakers_bakes_results_df)`**
+
+The variables of the final dataset are: **`r colnames(bakers_bakes_results_df)`**
+
+Following table showing the star baker or winnder from seasons 5 to 10. If a baker scored high on techical, they are more likely to win a star baker or winner. 
+```{r table}
+#create a table for starbaker/winner for each episode in season 5 to 10
+table = bakers_bakes_results_df |>  filter(result==c("WINNER","STAR BAKER")) |>
+  filter(series >= 5) |>
+  arrange(series,episode) |> 
+  select(baker_name, baker, series, episode, technical, result)
+head(table)
+```
+
+The viewers data: 
+```{r}
+viewers_df[1:10,1:11] 
+```
+
+The average viewership in season 1 is: **`r round(mean(pull(viewers_df, series_1), na.rm=TRUE), digits=2)`**
+
+The average viewership in season 5 is: **`r round(mean(pull(viewers_df, series_5), na.rm=TRUE), digits=2)`**
