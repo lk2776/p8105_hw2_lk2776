@@ -1,0 +1,99 @@
+---
+title: "prob2"
+output: html_document
+date: "2024-10-02"
+---
+## problem 2
+
+```{r read data}
+library(tidyverse)
+#read mr_trash_wheel data
+mr_trash_wheel = readxl::read_excel("./data/202409_Trash_Wheel_Collection_Data.xlsx",
+                            sheet = "Mr. Trash Wheel", 
+                            col_names=TRUE,na="") |>
+  #remove empty columns 
+  select(-"...15",-"...16") |>
+  #clean names
+  janitor::clean_names() |>
+  #drop rows with empty dumpster values
+  drop_na(dumpster) |> 
+  #convert sports balls to integer and round it off
+  mutate(sports_balls = as.integer(round(sports_balls),digits=0)) |>
+  #create a new variable
+  mutate(wheel_name = "mr_trash_wheel")
+
+#read professor trash wheel data
+prof_trash_wheel = readxl::read_excel("./data/202409_Trash_Wheel_Collection_Data.xlsx",
+                            sheet = "Professor Trash Wheel", col_names=TRUE,na="") |>
+  #clean names
+  janitor::clean_names() |>
+  #drop rows with empty dumpster values
+  drop_na(dumpster) |> 
+  #convert year to character for bindin purposes
+  mutate(year=as.character(year)) |> 
+  #create new variable
+  mutate(wheel_name = "prof_trash_wheel")
+
+#read gwynnda data 
+g_trash_wheel = readxl::read_excel("./data/202409_Trash_Wheel_Collection_Data.xlsx",
+                            sheet = "Gwynnda Trash Wheel", col_names=TRUE,na="") |>
+  #clean names 
+  janitor::clean_names() |>
+  #drop rows with empty dumpster values 
+  drop_na(dumpster) |>
+  #convert year to character for bindin purposes
+  mutate(year=as.character(year)) |> 
+  #create new variable
+  mutate(wheel_name = "g_trash_wheel")
+
+#combine tables 
+trash_wheel_tidy = 
+  bind_rows(mr_trash_wheel, prof_trash_wheel, g_trash_wheel) 
+```
+
+Mr. Trash Wheel data is read using read_csv(). Empty columns are deselected using select(), and a new variable, wheel_name, is created with the value 'mr_trash_wheel' using mutate(). The values in the 'sports_balls' column are rounded to the nearest integer, and rows that do not include dumpster-specific data are omitted. Professor Trash Wheel and Gwynnda data are cleaned and read in a similar manner, with a new variable, wheel_name, added to them with the values 'prof_trash_wheel' and 'g_trash_wheel,' respectively. The variable year is converted to character class for these two datasets to facilitate binding with other datasets.
+
+The number of rows and columns of mr. trash wheel dataset are: : **`r dim_desc(mr_trash_wheel)`**
+
+The number of rows and columns of prof. trash wheel dataset are: : **`r dim_desc(prof_trash_wheel)`**
+
+The number of rows and columns of gywn. trash wheel dataset are: : **`r dim_desc(g_trash_wheel)`**
+
+The number of rows and columns of the combined dataset are : **`r dim(trash_wheel_tidy)`**
+
+Column names of the combined trashwheel datasets are: **`r colnames(trash_wheel_tidy)`**
+
+The weight in tons of trash collected by professor trash wheel: **`r sum(prof_trash_wheel$weight_tons,na.rm=TRUE)`**
+
+The total number of cigarette butts collected by Gwynnda trash wheel in 2022 are 205410
+```{r asnwering questions}
+#number of cigarette butts collected by g_trash_wheel in 2022
+g_trash_wheel |>  filter(year%in%"2022")  |>
+  summarize(sum_cig_butts = sum(cigarette_butts, na.rm=TRUE))
+```
+additional information: 
+
+Mr. Trash Wheel collected the most trash in tons according to the dataset
+
+The weight in tons of trash collected by mr. trash wheel: **`r sum(mr_trash_wheel$weight_tons,na.rm=TRUE)`**
+
+The weight in tons of trash collected by prof. trash wheel: **`r sum(prof_trash_wheel$weight_tons,na.rm=TRUE)`**
+
+The weight in tons of trash collected by gwynnda trash wheel: **`r sum(g_trash_wheel$weight_tons,na.rm=TRUE)`**
+
+Cigarette butts: Mr. Trash Wheel collected the highest number of cigarette butts according to the dataset. 
+
+The total number of cigarette_butts collected by mr.trash wheel: **`r sum(mr_trash_wheel$cigarette_butts,na.rm=TRUE)`**
+
+The total number of cigarette_butts collected by prof trash wheel: **`r sum(prof_trash_wheel$cigarette_butts,na.rm=TRUE)`**
+
+The total number of cigarette_butts collected by gwynndatrash wheel: **`r sum(g_trash_wheel$cigarette_butts,na.rm=TRUE)`**
+
+Plastic bottles: Mr. Trash Wheel collected the highest number of plastic bottles according to the dataset. 
+
+The total number of plastic_bottles collected by mr.trash wheel: **`r sum(mr_trash_wheel$plastic_bottles,na.rm=TRUE)`**
+
+The total number of plastic_bottles collected by prof trash wheel: **`r sum(prof_trash_wheel$plastic_bottles,na.rm=TRUE)`**
+
+The total number of plastic_bottles collected by gwynndatrash wheel: **`r sum(g_trash_wheel$plastic_bottles,na.rm=TRUE)`**
+
