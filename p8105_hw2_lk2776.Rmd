@@ -167,8 +167,7 @@ g_trash_wheel |>  filter(year%in%"2022")  |>
   summarize(sum_cig_butts = sum(cigarette_butts, na.rm=TRUE))
   
 ```
-
+----------------------------------------------
 Problem3:
 
-  
   

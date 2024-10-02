@@ -1,0 +1,29 @@
+---
+title: "problem3"
+output: html_document
+date: "2024-10-02"
+---
+```{r}
+bakers_data = read_csv("./data/bakers.csv", 
+                       col_names=TRUE,
+                       na=c("NA",".","")) |>
+  #clean column names
+  janitor::clean_names() 
+```
+
+```{r}
+bakes_data = read_csv("./data/bakes.csv", 
+                      col_names=TRUE,
+                      na=c("NA",".","")) |> 
+  #clean column names
+  janitor::clean_names() 
+```
+
+```{r}
+results_data = read_csv("./data/results.csv", 
+                        col_names=TRUE,
+                        na=c("NA",".","")) |>
+  #clean column names
+  janitor::clean_names() 
+```
+
