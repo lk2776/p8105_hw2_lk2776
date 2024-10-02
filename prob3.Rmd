@@ -17,10 +17,15 @@ bakes_data = read_csv("./data/bakes.csv",
   janitor::clean_names() 
 
 bakers_bakes_df = 
-  left_join(bakers_data, bakes_data, by = c("baker", "series")) |>
+  full_join(bakers_data, bakes_data, by = c("baker", "series")) |>
   relocate(baker_name,baker,baker_age,baker_occupation,hometown,series,episode,signature_bake,show_stopper)
 
+#test
+test <- anti_join(bakers_data, bakes_data, by = c("baker", "series"))
+test2 <- anti_join(bakes_data, bakers_data, by = c("baker", "series"))
+write_csv(bakers_bakes_df,file="./output/bakers_bakes_df.csv")
 ```
+
 
 ```{r}
 results_data = read_csv("./data/results.csv", 
@@ -28,8 +33,12 @@ results_data = read_csv("./data/results.csv",
                         na=c("NA",".","")) |>
   janitor::clean_names() 
 
-baker_bake_results_df = 
+bakers_bakes_results_df = 
 full_join(bakers_bakes_df, results_data, by=c("baker","series","episode"))
+
+test3 <- anti_join(bakers_bakes_df, results_data, by = c("baker","series","episode"))
+test4 <- anti_join(results_data, bakers_bakes_df,by = c("baker","series","episode"))
+write_csv(bakers_bakes_results_df,file="./output/bakers_bakes_results_df.csv")
 
 ```
 
