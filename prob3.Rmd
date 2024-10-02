@@ -21,9 +21,9 @@ bakers_bakes_df =
   relocate(baker_name,baker,baker_age,baker_occupation,hometown,series,episode,signature_bake,show_stopper)
 
 #test
-test <- anti_join(bakers_data, bakes_data, by = c("baker", "series"))
-test2 <- anti_join(bakes_data, bakers_data, by = c("baker", "series"))
-write_csv(bakers_bakes_df,file="./data/bakers_bakes_df.csv")
+#test <- anti_join(bakers_data, bakes_data, by = c("baker", "series"))
+#test2 <- anti_join(bakes_data, bakers_data, by = c("baker", "series"))
+#write_csv(bakers_bakes_df,file="./data/bakers_bakes_df.csv")
 ```
 
 
@@ -35,10 +35,23 @@ results_data = read_csv("./data/results.csv",
 
 bakers_bakes_results_df = 
 full_join(bakers_bakes_df, results_data, by=c("baker","series","episode"))
-
-test3 <- anti_join(bakers_bakes_df, results_data, by = c("baker","series","episode"))
-test4 <- anti_join(results_data, bakers_bakes_df,by = c("baker","series","episode"))
 write_csv(bakers_bakes_results_df,file="./data/bakers_bakes_results_df.csv")
+
+#test
+#test3 <- anti_join(bakers_bakes_df, results_data, by = c("baker","series","episode"))
+#test4 <- anti_join(results_data, bakers_bakes_df,by = c("baker","series","episode"))
+
+```
+
+```{r}
+table = bakers_bakes_results_df |>  filter(result==c("WINNER","STAR BAKER")) |>
+  filter(series >= 5) |>
+  arrange(series,episode)
+write_csv(table,file="./data/table.csv")
+
+```
+
+```{r}
 
 ```
 
