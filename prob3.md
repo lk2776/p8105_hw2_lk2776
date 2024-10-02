@@ -2,16 +2,7 @@ problem3
 ================
 2024-10-02
 
-bakers data is read using read_csv() from tidyverse, column names are
-cleaned by janitor::clean_names(). ‘baker’ variable is created from
-first part of baker_name variable using separate(), and the ‘rest_of_the
-name’ is removed from the dataset. This additional variable is created
-to join it with bakes_data, which has only baker variable (not the full
-name) bakes data is read in a similar fashion, joined with bakers_data
-with full_join(). Similarly, results_data is read using read_csv(),
-skipped first 2 lines of the dataset, and joined with bakers_bakes_data
-with full_join(). anti_join() is used to verify that the data is not
-missed while joining the tables.
+## problem3
 
 ``` r
 library(tidyverse)
@@ -69,29 +60,24 @@ bakers_bakes_df =
   relocate(baker_name,baker,baker_age,baker_occupation,hometown,series,episode,signature_bake,show_stopper)
 
 #check for completeness and correctness of data
-anti_join(bakers_data, bakes_data, by = c("baker", "series"))
+head(anti_join(bakers_data, bakes_data, by = c("baker", "series")))
 ```
 
-    ## # A tibble: 26 × 6
-    ##    baker_name          baker  series baker_age baker_occupation         hometown
-    ##    <chr>               <chr>   <dbl>     <dbl> <chr>                    <chr>   
-    ##  1 Alice Fevronia      Alice      10        28 Geography teacher        Essex   
-    ##  2 Amelia LeBruin      Amelia     10        24 Fashion designer         Halifax 
-    ##  3 Antony Amourdoux    Antony      9        30 Banker                   London  
-    ##  4 Briony Williams     Briony      9        33 Full-time parent         Bristol 
-    ##  5 Dan Beasley-Harling Dan         9        36 Full-time parent         London  
-    ##  6 Dan Chambers        Dan        10        32 Support worker           Rotherh…
-    ##  7 David Atherton      David      10        36 International health ad… Whitby  
-    ##  8 Helena Garcia       Helena     10        40 Online project manager   Leeds   
-    ##  9 Henry Bird          Henry      10        20 Student                  Durham  
-    ## 10 Imelda McCarron     Imelda      9        33 Countryside recreation … County …
-    ## # ℹ 16 more rows
+    ## # A tibble: 6 × 6
+    ##   baker_name          baker  series baker_age baker_occupation  hometown 
+    ##   <chr>               <chr>   <dbl>     <dbl> <chr>             <chr>    
+    ## 1 Alice Fevronia      Alice      10        28 Geography teacher Essex    
+    ## 2 Amelia LeBruin      Amelia     10        24 Fashion designer  Halifax  
+    ## 3 Antony Amourdoux    Antony      9        30 Banker            London   
+    ## 4 Briony Williams     Briony      9        33 Full-time parent  Bristol  
+    ## 5 Dan Beasley-Harling Dan         9        36 Full-time parent  London   
+    ## 6 Dan Chambers        Dan        10        32 Support worker    Rotherham
 
 ``` r
-anti_join(bakes_data, bakers_data, by = c("baker", "series"))
+head(anti_join(bakes_data, bakers_data, by = c("baker", "series")))
 ```
 
-    ## # A tibble: 8 × 5
+    ## # A tibble: 6 × 5
     ##   series episode baker    signature_bake                            show_stopper
     ##    <dbl>   <dbl> <chr>    <chr>                                     <chr>       
     ## 1      2       1 "\"Jo\"" Chocolate Orange CupcakesOrange and Card… Chocolate a…
@@ -100,8 +86,6 @@ anti_join(bakes_data, bakers_data, by = c("baker", "series"))
     ## 4      2       4 "\"Jo\"" Lavender Biscuits                         Blueberry M…
     ## 5      2       5 "\"Jo\"" Salmon and Asparagus Pie                  Apple and R…
     ## 6      2       6 "\"Jo\"" Rum and Raisin Baked Cheesecake           Limoncello …
-    ## 7      2       7 "\"Jo\"" Raspberry & Strawberry Mousse Cake        Pain Aux Ra…
-    ## 8      2       8 "\"Jo\"" Raspberry and Blueberry Mille Feuille     Mini Victor…
 
 ``` r
 #read results data 
@@ -127,55 +111,33 @@ full_join(bakers_bakes_df, results_data, by=c("baker","series","episode"))
 write_csv(bakers_bakes_results_df,file="./data/bakers_bakes_results_df.csv")
 
 #check for completeness of data
-anti_join(bakers_bakes_df, results_data, by = c("baker","series","episode"))
+head(anti_join(bakers_bakes_df, results_data, by = c("baker","series","episode")))
 ```
 
-    ## # A tibble: 34 × 9
-    ##    baker_name          baker  baker_age baker_occupation hometown series episode
-    ##    <chr>               <chr>      <dbl> <chr>            <chr>     <dbl>   <dbl>
-    ##  1 Alice Fevronia      Alice         28 Geography teach… Essex        10      NA
-    ##  2 Amelia LeBruin      Amelia        24 Fashion designer Halifax      10      NA
-    ##  3 Antony Amourdoux    Antony        30 Banker           London        9      NA
-    ##  4 Briony Williams     Briony        33 Full-time parent Bristol       9      NA
-    ##  5 Dan Beasley-Harling Dan           36 Full-time parent London        9      NA
-    ##  6 Dan Chambers        Dan           32 Support worker   Rotherh…     10      NA
-    ##  7 David Atherton      David         36 International h… Whitby       10      NA
-    ##  8 Helena Garcia       Helena        40 Online project … Leeds        10      NA
-    ##  9 Henry Bird          Henry         20 Student          Durham       10      NA
-    ## 10 Imelda McCarron     Imelda        33 Countryside rec… County …      9      NA
-    ## # ℹ 24 more rows
+    ## # A tibble: 6 × 9
+    ##   baker_name          baker  baker_age baker_occupation  hometown series episode
+    ##   <chr>               <chr>      <dbl> <chr>             <chr>     <dbl>   <dbl>
+    ## 1 Alice Fevronia      Alice         28 Geography teacher Essex        10      NA
+    ## 2 Amelia LeBruin      Amelia        24 Fashion designer  Halifax      10      NA
+    ## 3 Antony Amourdoux    Antony        30 Banker            London        9      NA
+    ## 4 Briony Williams     Briony        33 Full-time parent  Bristol       9      NA
+    ## 5 Dan Beasley-Harling Dan           36 Full-time parent  London        9      NA
+    ## 6 Dan Chambers        Dan           32 Support worker    Rotherh…     10      NA
     ## # ℹ 2 more variables: signature_bake <chr>, show_stopper <chr>
 
 ``` r
-anti_join(results_data, bakers_bakes_df,by = c("baker","series","episode"))
+head(anti_join(results_data, bakers_bakes_df,by = c("baker","series","episode")))
 ```
 
-    ## # A tibble: 596 × 5
-    ##    series episode baker    technical result
-    ##     <dbl>   <dbl> <chr>        <dbl> <chr> 
-    ##  1      1       2 Lea             NA <NA>  
-    ##  2      1       2 Mark            NA <NA>  
-    ##  3      1       3 Annetha         NA <NA>  
-    ##  4      1       3 Lea             NA <NA>  
-    ##  5      1       3 Louise          NA <NA>  
-    ##  6      1       3 Mark            NA <NA>  
-    ##  7      1       4 Annetha         NA <NA>  
-    ##  8      1       4 Jonathan        NA <NA>  
-    ##  9      1       4 Lea             NA <NA>  
-    ## 10      1       4 Louise          NA <NA>  
-    ## # ℹ 586 more rows
-
-The no. of rows and columns of final dataset are: **1170, 11** The
-variables of the final datasets are: **baker_name, baker, baker_age,
-baker_occupation, hometown, series, episode, signature_bake,
-show_stopper, technical, result**
-
-``` r
-#create a table for starbaker/winner for each episode in season 5 to 10
-table = bakers_bakes_results_df |>  filter(result==c("WINNER","STAR BAKER")) |>
-  filter(series >= 5) |>
-  arrange(series,episode)
-```
+    ## # A tibble: 6 × 5
+    ##   series episode baker   technical result
+    ##    <dbl>   <dbl> <chr>       <dbl> <chr> 
+    ## 1      1       2 Lea            NA <NA>  
+    ## 2      1       2 Mark           NA <NA>  
+    ## 3      1       3 Annetha        NA <NA>  
+    ## 4      1       3 Lea            NA <NA>  
+    ## 5      1       3 Louise         NA <NA>  
+    ## 6      1       3 Mark           NA <NA>
 
 ``` r
 #read viewers_df
@@ -193,9 +155,58 @@ viewers_df = read_csv("./data/viewers.csv",
     ## ℹ Use `spec()` to retrieve the full column specification for this data.
     ## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 
+Bakers data is read using read_csv() from the tidyverse, and the column
+names are cleaned using janitor::clean_names(). A ‘baker’ variable is
+created from the first part of the baker_name variable using separate(),
+while the ‘rest_of_the_name’ is removed from the dataset. This
+additional variable is created to facilitate a join with bakes_data,
+which contains only the ‘baker’ variable (not the full name).
+
+Bakes data is read in a similar fashion and joined with bakers_data
+using full_join(). Similarly, results_data is read using read_csv(),
+skipping the first two lines of the dataset, and then joined with
+bakers_bakes_data using full_join(). The anti_join() function is used to
+verify that no data is missed while joining the tables.
+
+One of the questions I addressed was whether to skip the lines in
+results.csv using code or to manually delete those lines in Excel. I
+chose to use skip = 2 to skip the lines in results.csv. Another question
+was which join to use; I decided on full_join() to ensure that no data
+from the dataframes is missed.
+
+The no. of rows and columns of final dataset are: **1170, 11**
+
+The variables of the final dataset are: **baker_name, baker, baker_age,
+baker_occupation, hometown, series, episode, signature_bake,
+show_stopper, technical, result**
+
+Following table showing the star baker or winnder from seasons 5 to 10.
+If a baker scored high on techical, they are more likely to win a star
+baker or winner.
+
 ``` r
-#print viewers data
-print(viewers_df)
+#create a table for starbaker/winner for each episode in season 5 to 10
+table = bakers_bakes_results_df |>  filter(result==c("WINNER","STAR BAKER")) |>
+  filter(series >= 5) |>
+  arrange(series,episode) |> 
+  select(baker_name, baker, series, episode, technical, result)
+head(table)
+```
+
+    ## # A tibble: 6 × 6
+    ##   baker_name        baker   series episode technical result    
+    ##   <chr>             <chr>    <dbl>   <dbl>     <dbl> <chr>     
+    ## 1 Nancy Birtwhistle Nancy        5       1         1 STAR BAKER
+    ## 2 Kate Henry        Kate         5       5         3 STAR BAKER
+    ## 3 Richard Burr      Richard      5       7         1 STAR BAKER
+    ## 4 Richard Burr      Richard      5       9         2 STAR BAKER
+    ## 5 Nancy Birtwhistle Nancy        5      10         1 WINNER    
+    ## 6 Marie Campbell    Marie        6       1         3 STAR BAKER
+
+The viewers data:
+
+``` r
+viewers_df[1:10,1:11] 
 ```
 
     ## # A tibble: 10 × 11
@@ -213,14 +224,6 @@ print(viewers_df)
     ## 10      10    NA       NA        6.74     9.45    13.5      15.0     15.9
     ## # ℹ 3 more variables: series_8 <dbl>, series_9 <dbl>, series_10 <dbl>
 
-``` r
-round(mean(pull(viewers_df, series_1), na.rm=TRUE), digits=2)
-```
+The average viewership in season 1 is: **2.77**
 
-    ## [1] 2.77
-
-``` r
-round(mean(pull(viewers_df, series_5), na.rm=TRUE), digits=2)
-```
-
-    ## [1] 10.04
+The average viewership in season 5 is: **10.04**

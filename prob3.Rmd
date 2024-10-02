@@ -46,13 +46,6 @@ head(anti_join(results_data, bakers_bakes_df,by = c("baker","series","episode"))
 
 ```
 
-```{r table}
-#create a table for starbaker/winner for each episode in season 5 to 10
-table = bakers_bakes_results_df |>  filter(result==c("WINNER","STAR BAKER")) |>
-  filter(series >= 5) |>
-  arrange(series,episode)
-```
-
 ```{r read viewers data}
 #read viewers_df
 viewers_df = read_csv("./data/viewers.csv", 
@@ -60,19 +53,33 @@ viewers_df = read_csv("./data/viewers.csv",
                         na=c("NA",".","")) |>
   janitor::clean_names() 
 
-#print viewers data
-print(viewers_df)
-
 ```
 
-bakers data is read using read_csv() from tidyverse, column names are cleaned by janitor::clean_names(). 'baker' variable is created from first part of baker_name variable using separate(), and the 'rest_of_the name' is removed from the dataset. This additional variable is created to join it with bakes_data, which has only baker variable (not the full name)
-bakes data is read in a similar fashion, joined with bakers_data with full_join(). Similarly, results_data is read using read_csv(), skipped first 2 lines of the dataset, and joined with bakers_bakes_data with full_join(). anti_join() is used to verify that the data is not missed while joining the tables. 
+Bakers data is read using read_csv() from the tidyverse, and the column names are cleaned using janitor::clean_names(). A 'baker' variable is created from the first part of the baker_name variable using separate(), while the 'rest_of_the_name' is removed from the dataset. This additional variable is created to facilitate a join with bakes_data, which contains only the 'baker' variable (not the full name).
 
+Bakes data is read in a similar fashion and joined with bakers_data using full_join(). Similarly, results_data is read using read_csv(), skipping the first two lines of the dataset, and then joined with bakers_bakes_data using full_join(). The anti_join() function is used to verify that no data is missed while joining the tables.
 
+One of the questions I addressed was whether to skip the lines in results.csv using code or to manually delete those lines in Excel. I chose to use skip = 2 to skip the lines in results.csv. Another question was which join to use; I decided on full_join() to ensure that no data from the dataframes is missed.
 
 The no. of rows and columns of final dataset are: **`r dim(bakers_bakes_results_df)`**
 
-The variables of the final datasets are: **`r colnames(bakers_bakes_results_df)`**
+The variables of the final dataset are: **`r colnames(bakers_bakes_results_df)`**
 
-round(mean(pull(viewers_df, series_1), na.rm=TRUE), digits=2)
-round(mean(pull(viewers_df, series_5), na.rm=TRUE), digits=2)
+Following table showing the star baker or winnder from seasons 5 to 10. If a baker scored high on techical, they are more likely to win a star baker or winner. 
+```{r table}
+#create a table for starbaker/winner for each episode in season 5 to 10
+table = bakers_bakes_results_df |>  filter(result==c("WINNER","STAR BAKER")) |>
+  filter(series >= 5) |>
+  arrange(series,episode) |> 
+  select(baker_name, baker, series, episode, technical, result)
+head(table)
+```
+
+The viewers data: 
+```{r}
+viewers_df[1:10,1:11] 
+```
+
+The average viewership in season 1 is: **`r round(mean(pull(viewers_df, series_1), na.rm=TRUE), digits=2)`**
+
+The average viewership in season 5 is: **`r round(mean(pull(viewers_df, series_5), na.rm=TRUE), digits=2)`**
