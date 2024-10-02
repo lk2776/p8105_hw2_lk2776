@@ -133,7 +133,7 @@ The number of rows and columns of prof. trash wheel dataset are: : **`r dim_desc
 
 The number of rows and columns of gywn. trash wheel dataset are: : **`r dim_desc(g_trash_wheel)`**
 
-The number of rows and columns of the combined dataset are : **`r dim(trash_wheel_tidy)`**
+The number of rows and columns of the combined dataset are : **`r dim_desc(trash_wheel_tidy)`**
 
 Column names of the combined trashwheel datasets are: **`r colnames(trash_wheel_tidy)`**
 
@@ -231,7 +231,8 @@ The no. of rows and columns of final dataset are: **`r dim(bakers_bakes_results_
 
 The variables of the final dataset are: **`r colnames(bakers_bakes_results_df)`**
 
-Following table showing the star baker or winnder from seasons 5 to 10. If a baker scored high on techical, they are more likely to win a star baker or winner. 
+The following table shows the Star Baker or winner from seasons 5 to 10. If a baker scores high on technical, they are more likely to win Star Baker or be the overall winner.
+
 ```{r table}
 #create a table for starbaker/winner for each episode in season 5 to 10
 table = bakers_bakes_results_df |>  filter(result==c("WINNER","STAR BAKER")) |>
