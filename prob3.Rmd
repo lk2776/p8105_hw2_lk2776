@@ -19,6 +19,7 @@ bakes_data = read_csv("./data/bakes.csv",
   janitor::clean_names() 
 ```
 
+
 ```{r}
 results_data = read_csv("./data/results.csv", 
                         col_names=TRUE,
