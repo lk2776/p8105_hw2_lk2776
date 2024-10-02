@@ -158,6 +158,7 @@ dim(trash_wheel_tidy)
 
 ```
 
+
 ```{r asnwering questions}
 #total trash collected by pro_trash_wheel
 sum(prof_trash_wheel$weight_tons,na.rm=TRUE)

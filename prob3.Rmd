@@ -3,7 +3,11 @@ title: "problem3"
 output: github_document
 date: "2024-10-02"
 ---
-```{r}
+
+## problem3 
+
+```{r read bakers, bakes data}
+library(tidyverse)
 bakers_data = read_csv("./data/bakers.csv", 
                        col_names=TRUE,
                        na=c("NA",".","")) |>
@@ -16,50 +20,59 @@ bakes_data = read_csv("./data/bakes.csv",
                       na=c("NA",".","")) |> 
   janitor::clean_names() 
 
+#join the datasets by full_join
 bakers_bakes_df = 
   full_join(bakers_data, bakes_data, by = c("baker", "series")) |>
   relocate(baker_name,baker,baker_age,baker_occupation,hometown,series,episode,signature_bake,show_stopper)
 
-#test
-#test <- anti_join(bakers_data, bakes_data, by = c("baker", "series"))
-#test2 <- anti_join(bakes_data, bakers_data, by = c("baker", "series"))
-#write_csv(bakers_bakes_df,file="./data/bakers_bakes_df.csv")
-```
+#check for completeness and correctness of data
+head(anti_join(bakers_data, bakes_data, by = c("baker", "series")))
+head(anti_join(bakes_data, bakers_data, by = c("baker", "series")))
 
-
-```{r}
+#read results data 
 results_data = read_csv("./data/results.csv", 
                         col_names=TRUE,
-                        na=c("NA",".","")) |>
+                        na=c("NA",".",""), skip=2) |>
   janitor::clean_names() 
 
+#join results data with bakers_bakes_df
 bakers_bakes_results_df = 
 full_join(bakers_bakes_df, results_data, by=c("baker","series","episode"))
 write_csv(bakers_bakes_results_df,file="./data/bakers_bakes_results_df.csv")
 
-#test
-#test3 <- anti_join(bakers_bakes_df, results_data, by = c("baker","series","episode"))
-#test4 <- anti_join(results_data, bakers_bakes_df,by = c("baker","series","episode"))
+#check for completeness of data
+head(anti_join(bakers_bakes_df, results_data, by = c("baker","series","episode")))
+head(anti_join(results_data, bakers_bakes_df,by = c("baker","series","episode")))
 
 ```
 
-```{r}
+```{r table}
+#create a table for starbaker/winner for each episode in season 5 to 10
 table = bakers_bakes_results_df |>  filter(result==c("WINNER","STAR BAKER")) |>
   filter(series >= 5) |>
   arrange(series,episode)
-write_csv(table,file="./data/table.csv")
-
 ```
 
-```{r}
+```{r read viewers data}
+#read viewers_df
 viewers_df = read_csv("./data/viewers.csv", 
                         col_names=TRUE,
                         na=c("NA",".","")) |>
   janitor::clean_names() 
 
+#print viewers data
 print(viewers_df)
-round(mean(pull(viewers_df, series_1), na.rm=TRUE), digits=2)
-round(mean(pull(viewers_df, series_5), na.rm=TRUE), digits=2)
 
 ```
 
+bakers data is read using read_csv() from tidyverse, column names are cleaned by janitor::clean_names(). 'baker' variable is created from first part of baker_name variable using separate(), and the 'rest_of_the name' is removed from the dataset. This additional variable is created to join it with bakes_data, which has only baker variable (not the full name)
+bakes data is read in a similar fashion, joined with bakers_data with full_join(). Similarly, results_data is read using read_csv(), skipped first 2 lines of the dataset, and joined with bakers_bakes_data with full_join(). anti_join() is used to verify that the data is not missed while joining the tables. 
+
+
+
+The no. of rows and columns of final dataset are: **`r dim(bakers_bakes_results_df)`**
+
+The variables of the final datasets are: **`r colnames(bakers_bakes_results_df)`**
+
+round(mean(pull(viewers_df, series_1), na.rm=TRUE), digits=2)
+round(mean(pull(viewers_df, series_5), na.rm=TRUE), digits=2)
