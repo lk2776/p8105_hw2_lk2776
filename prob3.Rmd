@@ -7,24 +7,29 @@ date: "2024-10-02"
 bakers_data = read_csv("./data/bakers.csv", 
                        col_names=TRUE,
                        na=c("NA",".","")) |>
-  #clean column names
-  janitor::clean_names() 
-```
+  janitor::clean_names() |>
+  separate(baker_name,into=c("baker","rest_of_the_name"), sep=" ", remove=FALSE) |>
+  select(-rest_of_the_name)
 
-```{r}
 bakes_data = read_csv("./data/bakes.csv", 
                       col_names=TRUE,
                       na=c("NA",".","")) |> 
-  #clean column names
   janitor::clean_names() 
-```
 
+bakers_bakes_df = 
+  left_join(bakers_data, bakes_data, by = c("baker", "series")) |>
+  relocate(baker_name,baker,baker_age,baker_occupation,hometown,series,episode,signature_bake,show_stopper)
+
+```
 
 ```{r}
 results_data = read_csv("./data/results.csv", 
                         col_names=TRUE,
                         na=c("NA",".","")) |>
-  #clean column names
   janitor::clean_names() 
+
+baker_bake_results_df = 
+full_join(bakers_bakes_df, results_data, by=c("baker","series","episode"))
+
 ```
 
