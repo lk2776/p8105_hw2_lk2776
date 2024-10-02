@@ -1,6 +1,6 @@
 ---
 title: "problem3"
-output: html_document
+output: github_document
 date: "2024-10-02"
 ---
 ```{r}
@@ -52,6 +52,14 @@ write_csv(table,file="./data/table.csv")
 ```
 
 ```{r}
+viewers_df = read_csv("./data/viewers.csv", 
+                        col_names=TRUE,
+                        na=c("NA",".","")) |>
+  janitor::clean_names() 
+
+print(viewers_df)
+mean(viewers_df$series_1,na.rm = TRUE)
+mean(viewers_df$series_5)
 
 ```
 
