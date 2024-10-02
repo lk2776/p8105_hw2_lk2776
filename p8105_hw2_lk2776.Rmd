@@ -5,7 +5,7 @@ date: "2024-09-30"
 ---
 
 ```{r setup, warning=FALSE, message=FALSE}
-#load packages; print 3 lines of tibble output
+#load packages
 library(tidyverse)
 ```
 
@@ -36,7 +36,7 @@ nyc_data = read_csv("./data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv",
 nyc_data |> sapply(class)
 ```
 
-The cleaned NYC dataset contains the following variables: line, station_name, station_latitude, station_longitude, routes1-11, entry, vending, entrance_type, and ada. The cleaning process involved reading the data with missing values using na(), specifying columns route8-11 as character columns using col_types(), cleaning the column names with janitor::clean_names(), selecting the desired columns with select(), and converting the entry variable using mutate() and ifelse() functions. The resulting dataset has the following number of rows and columns: **`r dim_desc(nyc_data)`** . The data is not tidy because routes1-11 can be put together in two columns: route_name and route_value. 
+The cleaning process of NYC dataset involved reading the data with missing values using na(), specifying columns route8-11 as character columns using col_types(), cleaning the column names with janitor::clean_names(), selecting the desired columns with select(), and converting the entry variable using mutate() and ifelse() functions. The data is not tidy because routes1-11 can be put together in two columns: route_name and route_value. The resulting dataset has the following number of rows and columns: **`r dim_desc(nyc_data)`** . It contains the following variables: **`r colnames(nyc_data)`**
 
 - number of distinct stations in the dataset. :**`r nyc_data |> select(line,station_name)  |>
   unite("line_station_name", line:station_name) |> 
